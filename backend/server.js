@@ -14,9 +14,8 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true);
-  },
+  origin: 'https://menu-card-cyan.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 app.use(express.json()); 
