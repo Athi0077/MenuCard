@@ -29,10 +29,22 @@ export default function DishCard({ dish, onAdd }) {
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-1">
-          <h3 className="font-bold text-gray-900 truncate">
-            {dish.name}
-            {dish.dietaryPreference && dish.dietaryPreference !== 'None' && (
-              <span className={`ml-2 inline-block w-2.5 h-2.5 rounded-full ring-2 ring-offset-1 ${dish.dietaryPreference === 'Veg' || dish.dietaryPreference === 'Vegan' ? 'bg-green-500 ring-green-200' : 'bg-red-500 ring-red-200'}`} title={dish.dietaryPreference}></span>
+          <h3 className="font-bold text-gray-900 truncate flex items-center">
+            <span className="truncate">{dish.name}</span>
+            {(!dish.dietaryPreference || dish.dietaryPreference === 'None') && (
+              <span className="ml-2 flex-shrink-0 inline-block w-2 h-2 rounded-full bg-gray-400 ring-2 ring-gray-100 ring-offset-1" title="Not specified"></span>
+            )}
+            {dish.dietaryPreference === 'Veg' && (
+              <span className="ml-2 flex-shrink-0 inline-block w-2 h-2 rounded-full bg-green-500 ring-2 ring-green-200 ring-offset-1" title="Veg"></span>
+            )}
+            {dish.dietaryPreference === 'Non-Veg' && (
+              <span className="ml-2 flex-shrink-0 inline-block w-2 h-2 rounded-full bg-red-500 ring-2 ring-red-200 ring-offset-1" title="Non-Veg"></span>
+            )}
+            {dish.dietaryPreference === 'Vegan' && (
+              <span className="ml-2 flex-shrink-0 inline-flex items-center" title="Vegan">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500 ring-2 ring-green-200 ring-offset-1 z-10"></span>
+                <span className="inline-block w-2 h-2 rounded-full bg-red-500 ring-2 ring-red-200 ring-offset-1 -ml-1.5"></span>
+              </span>
             )}
           </h3>
           {!dish.isAvailable && (
