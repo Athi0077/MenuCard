@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 export default function OrderHistory({ token }) {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchHistory = async () => {
     setLoading(true);
@@ -27,12 +28,29 @@ export default function OrderHistory({ token }) {
 
   useEffect(() => { fetchHistory(); }, []);
 
+  const filteredHistory = history.filter(order => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      order.customerName?.toLowerCase().includes(q) ||
+      order.table?.toLowerCase().includes(q) ||
+      order.mobileNumber?.includes(q)
+    );
+  });
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center gap-4">
+        <input 
+          type="text" 
+          placeholder="Search by customer, table, or mobile..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full max-w-sm bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-800 outline-none transition-all"
+        />
         <button
           onClick={fetchHistory}
-          className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+          className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2.5 rounded-lg transition-colors whitespace-nowrap"
         >
           ↻ Refresh History
         </button>
@@ -40,8 +58,10 @@ export default function OrderHistory({ token }) {
 
       {loading ? (
         <p className="text-sm text-gray-400 py-8 text-center">Loading history...</p>
-      ) : history.length === 0 ? (
-        <p className="text-sm text-gray-400 py-8 text-center">No delivered orders found.</p>
+      ) : filteredHistory.length === 0 ? (
+        <p className="text-sm text-gray-400 py-8 text-center">
+          {history.length === 0 ? "No delivered orders found." : "No orders match your search."}
+        </p>
       ) : (
         <div className="overflow-x-auto bg-white rounded-2xl border border-gray-100 shadow-sm">
           <table className="w-full text-left border-collapse">
@@ -57,7 +77,7 @@ export default function OrderHistory({ token }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-sm">
-              {history.map((order) => {
+              {filteredHistory.map((order) => {
                 const isCancelled = order.status === 'Cancelled';
                 return (
                 <tr key={order._id} className={`transition-colors ${isCancelled ? 'bg-red-50/40 hover:bg-red-50/60' : 'hover:bg-gray-50/50'}`}>
