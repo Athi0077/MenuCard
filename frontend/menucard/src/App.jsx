@@ -178,7 +178,7 @@ export default function App() {
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Inline Live Order Tracking (Visible only when there's an active order) */}
-        <InlineOrderTracker />
+        <InlineOrderTracker isTrackingOpen={isTrackingOpen} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Menu Left / Center column workspace */}
