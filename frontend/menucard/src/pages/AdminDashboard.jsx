@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MenuManagement from '../components/MenuManagement';
 import OrdersTable from '../components/OrderTable';
 import OrderHistory from '../components/OrderHistory';
-import { requestPermission } from '../notification';
+
 
 export default function AdminDashboard({ token, onLogout }) {
   const [activeTab, setActiveTab] = useState('orders');
@@ -19,21 +19,7 @@ export default function AdminDashboard({ token, onLogout }) {
     console.error('Error decoding token', e);
   }
 
-  React.useEffect(() => {
-    if (token && adminId) {
-      requestPermission().then((fcmToken) => {
-        if (fcmToken) {
-          fetch(`${import.meta.env.VITE_API_URL}/api/fcm/save-token`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ adminId, token: fcmToken })
-          }).catch(err => console.error('Failed to register Admin FCM token', err));
-        }
-      });
-    }
-  }, [token, adminId]);
+
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 antialiased">

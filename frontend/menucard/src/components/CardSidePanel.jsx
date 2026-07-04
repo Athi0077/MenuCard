@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { requestPermission } from '../notification';
+
 
 export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty, onOrderSuccess, onOpenTracking }) {
   const tables = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'];
@@ -22,7 +22,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
 
     setLoading(true);
 
-    const fcmToken = await requestPermission();
+
 
     const orderData = {
       table,
@@ -30,7 +30,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
       mobileNumber: formData.mobile,
       emailAddress: formData.email,
       tasteInstructions: formData.tasteInstructions,
-      fcmToken: fcmToken || '',
+
       items: cart.map(item => ({
         dish: item.baseId || item._id,
         quantity: item.quantity,
