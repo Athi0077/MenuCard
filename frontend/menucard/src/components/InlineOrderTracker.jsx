@@ -86,7 +86,10 @@ export default function InlineOrderTracker({ isTrackingOpen, onOpenTracking }) {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
         <div>
           <h3 className="font-bold text-gray-900 text-lg group-hover:text-teal-700 transition-colors">Live Order Tracking</h3>
-          <p className="text-xs text-gray-500 font-medium">ORD-{latestOrder._id.slice(-4).toUpperCase()} • Table {latestOrder.table} <span className="text-teal-600 ml-2 group-hover:underline">View details &rarr;</span></p>
+          <p className="text-xs text-gray-500 font-medium">
+            ORD-{latestOrder._id.slice(-4).toUpperCase()} • Table {latestOrder.table} • {new Date(latestOrder.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            <span className="text-teal-600 ml-2 group-hover:underline">View details &rarr;</span>
+          </p>
         </div>
         <span className="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-teal-100 uppercase tracking-wider flex items-center gap-1">
           {currentStatus} 
