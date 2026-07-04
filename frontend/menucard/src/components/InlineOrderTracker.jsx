@@ -3,6 +3,30 @@ import React, { useState, useEffect } from 'react';
 export default function InlineOrderTracker({ isTrackingOpen, onOpenTracking }) {
   const [latestOrder, setLatestOrder] = useState(null);
   const [hideDelivered, setHideDelivered] = useState(false);
+  const [countdown, setCountdown] = useState(null);
+
+  useEffect(() => {
+    let intervalId;
+    if (latestOrder && latestOrder.status === 'Preparing' && latestOrder.acceptedAt && latestOrder.timerMinutes > 0) {
+      intervalId = setInterval(() => {
+        const acceptedTime = new Date(latestOrder.acceptedAt).getTime();
+        const endTime = acceptedTime + (latestOrder.timerMinutes * 60 * 1000);
+        const remaining = endTime - Date.now();
+        setCountdown(remaining > 0 ? remaining : 0);
+      }, 1000);
+    } else {
+      setCountdown(null);
+    }
+    return () => clearInterval(intervalId);
+  }, [latestOrder]);
+
+  const formatCountdown = (ms) => {
+    if (ms <= 0) return "(Soon!)";
+    const totalSec = Math.floor(ms / 1000);
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    return `(${min}:${sec.toString().padStart(2, '0')})`;
+  };
 
   const fetchLatestOrder = async () => {
     const savedIds = JSON.parse(localStorage.getItem('user_orders') || '[]');
@@ -64,8 +88,9 @@ export default function InlineOrderTracker({ isTrackingOpen, onOpenTracking }) {
           <h3 className="font-bold text-gray-900 text-lg group-hover:text-teal-700 transition-colors">Live Order Tracking</h3>
           <p className="text-xs text-gray-500 font-medium">ORD-{latestOrder._id.slice(-4).toUpperCase()} • Table {latestOrder.table} <span className="text-teal-600 ml-2 group-hover:underline">View details &rarr;</span></p>
         </div>
-        <span className="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-teal-100 uppercase tracking-wider">
-          {currentStatus}
+        <span className="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-teal-100 uppercase tracking-wider flex items-center gap-1">
+          {currentStatus} 
+          {countdown !== null && <span className="font-black text-teal-900 ml-1">{formatCountdown(countdown)}</span>}
         </span>
       </div>
       
