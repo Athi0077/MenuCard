@@ -10,7 +10,7 @@ export default function OrdersTable({ token }) {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/orders', {
+      const response = await fetch('https://menucard-e73d.onrender.com/api/admin/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -34,7 +34,7 @@ export default function OrdersTable({ token }) {
     }
 
     // Setup Server-Sent Events (SSE) for real-time notifications
-    const eventSource = new EventSource(`http://localhost:5000/api/admin/orders/stream?token=${token}`);
+    const eventSource = new EventSource(`https://menucard-e73d.onrender.com/api/admin/orders/stream?token=${token}`);
     
     eventSource.onmessage = (event) => {
       try {
@@ -86,7 +86,7 @@ export default function OrdersTable({ token }) {
   const handleUpdateServer = async (id) => {
     const target = orders.find(o => o._id === id);
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${id}`, {
+      const response = await fetch(`https://menucard-e73d.onrender.com/api/admin/orders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ status: target.status, prepTime: target.prepTime })
@@ -106,7 +106,7 @@ export default function OrdersTable({ token }) {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${id}/accept`, {
+      const response = await fetch(`https://menucard-e73d.onrender.com/api/admin/orders/${id}/accept`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ timerMinutes: parseInt(timerMinutes) })

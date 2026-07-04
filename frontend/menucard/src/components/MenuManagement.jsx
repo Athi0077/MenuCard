@@ -10,7 +10,7 @@ export default function MenuManagement({ token }) {
 
   const fetchMenu = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/dishes');
+      const response = await fetch('https://menucard-e73d.onrender.com/api/dishes');
       const data = await response.json();
       if (response.ok) {
         setMenuItems(data);
@@ -39,8 +39,8 @@ export default function MenuManagement({ token }) {
 
     const isEditing = !!editingId;
     const url = isEditing
-      ? `http://localhost:5000/api/admin/dishes/${editingId}`
-      : 'http://localhost:5000/api/admin/dishes';
+      ? `https://menucard-e73d.onrender.com/api/admin/dishes/${editingId}`
+      : 'https://menucard-e73d.onrender.com/api/admin/dishes';
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
@@ -80,7 +80,7 @@ export default function MenuManagement({ token }) {
   const handleDeleteItem = async (id) => {
     if (!window.confirm('Are you sure you want to delete this dish?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/dishes/${id}`, {
+      const response = await fetch(`https://menucard-e73d.onrender.com/api/admin/dishes/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

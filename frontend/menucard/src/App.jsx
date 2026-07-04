@@ -21,7 +21,7 @@ export default function App() {
   // Fetch food menu live from MongoDB database on load
   useEffect(() => {
     if (!window.location.pathname.startsWith('/admin')) {
-      fetch('http://localhost:5000/api/dishes')
+      fetch('https://menucard-e73d.onrender.com/api/dishes')
         .then(res => res.json())
         .then(data => {
           setDishes(data);
@@ -40,7 +40,7 @@ export default function App() {
       Notification.requestPermission().catch(() => {});
     }
 
-    const eventSource = new EventSource('http://localhost:5000/api/orders/stream');
+    const eventSource = new EventSource('https://menucard-e73d.onrender.com/api/orders/stream');
 
     eventSource.onmessage = (event) => {
       try {

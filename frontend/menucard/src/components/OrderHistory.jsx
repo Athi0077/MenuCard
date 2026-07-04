@@ -8,7 +8,7 @@ export default function OrderHistory({ token }) {
   const fetchHistory = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/orders', {
+      const response = await fetch('https://menucard-e73d.onrender.com/api/admin/orders', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
