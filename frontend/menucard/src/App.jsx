@@ -165,7 +165,7 @@ export default function App() {
       <div className="min-h-screen text-gray-800 antialiased relative z-0">
         <div 
           className="fixed inset-0 -z-10"
-          style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.5 }}
+          style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         />
       <Navbar isTrackingOpen={isTrackingOpen} onOpenTracking={setIsTrackingOpen} />
       

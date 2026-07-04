@@ -15,8 +15,8 @@ export default function OrdersTable({ token }) {
       });
       const data = await response.json();
       if (response.ok) {
-        // Only show active orders (hide Delivered)
-        setOrders(data.filter(order => order.status !== 'Delivered'));
+        // Only show active orders (hide Delivered and Cancelled)
+        setOrders(data.filter(order => order.status !== 'Delivered' && order.status !== 'Cancelled'));
       } else {
         toast.error('Failed to fetch orders.');
       }

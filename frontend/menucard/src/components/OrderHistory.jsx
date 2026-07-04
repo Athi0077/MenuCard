@@ -52,16 +52,23 @@ export default function OrderHistory({ token }) {
                 <th className="p-4">Items</th>
                 <th className="p-4">Total</th>
                 <th className="p-4">Ordered Time</th>
-                <th className="p-4">Delivered Time</th>
+                <th className="p-4">Ended At</th>
                 <th className="p-4">Time Taken</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-sm">
-              {history.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50/50 transition-colors">
+              {history.map((order) => {
+                const isCancelled = order.status === 'Cancelled';
+                return (
+                <tr key={order._id} className={`transition-colors ${isCancelled ? 'bg-red-50/40 hover:bg-red-50/60' : 'hover:bg-gray-50/50'}`}>
                   <td className="p-4 font-medium text-gray-900">
                     <div className="font-bold">ORD-{order._id.slice(-4).toUpperCase()}</div>
-                    <div className="text-[10px] text-teal-700 font-semibold mt-1">Table {order.table}</div>
+                    <div className="text-[10px] text-teal-700 font-semibold mt-1 mb-1.5">Table {order.table}</div>
+                    {isCancelled ? (
+                      <div className="text-[10px] text-red-700 bg-red-100 font-bold px-1.5 py-0.5 rounded w-max border border-red-200 uppercase tracking-wider">Cancelled</div>
+                    ) : (
+                      <div className="text-[10px] text-green-700 bg-green-100 font-bold px-1.5 py-0.5 rounded w-max border border-green-200 uppercase tracking-wider">Delivered</div>
+                    )}
                   </td>
                   <td className="p-4">
                     <div className="font-semibold text-gray-900 text-sm">{order.customerName}</div>
@@ -89,11 +96,14 @@ export default function OrderHistory({ token }) {
                   <td className="p-4 text-xs font-bold text-gray-400 uppercase">
                     {new Date(order.updatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                   </td>
-                  <td className="p-4 text-xs font-bold text-teal-700 bg-teal-50/50 rounded-lg">
-                    {Math.floor((new Date(order.updatedAt) - new Date(order.createdAt)) / 60000)} mins
+                  <td className="p-4">
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${isCancelled ? 'text-red-700 bg-red-100/70' : 'text-teal-700 bg-teal-50'}`}>
+                      {Math.floor((new Date(order.updatedAt) - new Date(order.createdAt)) / 60000)} mins
+                    </span>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
