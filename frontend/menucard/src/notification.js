@@ -26,7 +26,9 @@ export async function requestPermission() {
       // You can also add custom UI like a toast here
     });
 
+    return token;
   } catch (error) {
     console.error("An error occurred while retrieving token. ", error);
+    return null;
   }
 }

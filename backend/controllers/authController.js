@@ -31,3 +31,24 @@ exports.loginAdmin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateFCMToken = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return res.status(400).json({ message: 'FCM token is required.' });
+    }
+
+    const admin = await Admin.findById(req.admin._id);
+    if (!admin) return res.status(404).json({ message: 'Admin not found.' });
+
+    if (!admin.fcmTokens.includes(token)) {
+      admin.fcmTokens.push(token);
+      await admin.save();
+    }
+
+    res.json({ message: 'FCM token registered successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

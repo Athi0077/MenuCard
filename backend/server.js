@@ -31,6 +31,7 @@ app.post('/api/admin/register', authController.registerAdmin);
 app.post('/api/admin/login', authController.loginAdmin);
 
 // Protected admin routes
+app.put('/api/admin/fcm-token', protectAdmin, authController.updateFCMToken);
 app.get('/api/admin/orders/stream', protectAdmin, orderController.streamOrders);
 app.post('/api/admin/dishes', protectAdmin, dishController.createDish);
 app.put('/api/admin/dishes/:id', protectAdmin, dishController.updateDish);
