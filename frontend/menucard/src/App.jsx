@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navebar';
 import CartSidePanel from './components/CardSidePanel';
 import bgImage from './assets/bg.jpeg';
+import { requestPermission } from "./notification";
 
 export default function App() {
   const [adminToken, setAdminToken] = useState(localStorage.getItem('admin_session_token') || '');
@@ -18,6 +19,10 @@ export default function App() {
   const [categories, setCategories] = useState(['All']);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const seenNotificationsRef = useRef(new Set());
+
+  useEffect(() => {
+    requestPermission();
+  }, []);
 
   // Fetch food menu live from MongoDB database on load
   useEffect(() => {
