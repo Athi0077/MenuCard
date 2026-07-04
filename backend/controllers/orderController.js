@@ -1,5 +1,5 @@
 const Order = require('../models/Order');
-const Admin = require('../models/Admin');
+const FcmToken = require('../models/FcmToken');
 const adminFirebase = require('../config/firebaseAdmin');
 const EventEmitter = require('events');
 
@@ -8,8 +8,8 @@ const orderEmitter = new EventEmitter();
 const notifyAdminsNewOrder = async (order) => {
   if (!adminFirebase.apps.length) return;
   try {
-    const admins = await Admin.find({});
-    const tokens = admins.reduce((acc, admin) => acc.concat(admin.fcmTokens || []), []);
+    const adminTokens = await FcmToken.find({});
+    const tokens = adminTokens.map(doc => doc.token);
     if (tokens.length > 0) {
       await adminFirebase.messaging().sendEachForMulticast({
         tokens,

@@ -26,6 +26,8 @@ app.get('/api/orders/stream', orderController.streamOrderUpdates);
 app.get('/api/orders/:id', orderController.getOrderById);
 app.put('/api/orders/:id/cancel', orderController.cancelOrder);
 
+app.use("/api/fcm", require("./routes/fcm"));
+
 // Admin auth routes
 app.post('/api/admin/register', authController.registerAdmin);
 app.post('/api/admin/login', authController.loginAdmin);

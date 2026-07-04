@@ -8,31 +8,32 @@ export default function AdminDashboard({ token, onLogout }) {
   const [activeTab, setActiveTab] = useState('orders');
 
   let staffName = 'Admin';
+  let adminId = null;
   try {
     if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.username) staffName = payload.username;
+      if (payload.id) adminId = payload.id;
     }
   } catch (e) {
     console.error('Error decoding token', e);
   }
 
   React.useEffect(() => {
-    if (token) {
+    if (token && adminId) {
       requestPermission().then((fcmToken) => {
         if (fcmToken) {
-          fetch(`${import.meta.env.VITE_API_URL}/api/admin/fcm-token`, {
-            method: 'PUT',
+          fetch(`${import.meta.env.VITE_API_URL}/api/fcm/save-token`, {
+            method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ token: fcmToken })
+            body: JSON.stringify({ adminId, token: fcmToken })
           }).catch(err => console.error('Failed to register Admin FCM token', err));
         }
       });
     }
-  }, [token]);
+  }, [token, adminId]);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 antialiased">
