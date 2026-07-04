@@ -19,7 +19,7 @@ export default function TrackOrder({ isOpen, onClose }) {
     try {
       const fetchedOrders = [];
       for (const id of savedIds) {
-        const res = await fetch(`http://localhost:5000/api/orders/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${id}`);
         if (res.ok) {
           const data = await res.json();
           fetchedOrders.push(data);
@@ -96,7 +96,7 @@ export default function TrackOrder({ isOpen, onClose }) {
 
   const handleCancelOrder = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${id}/cancel`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${id}/cancel`, {
         method: 'PUT'
       });
       if (res.ok) {

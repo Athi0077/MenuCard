@@ -22,7 +22,7 @@ export default function App() {
   // Fetch food menu live from MongoDB database on load
   useEffect(() => {
     if (!window.location.pathname.startsWith('/admin')) {
-      fetch('http://localhost:5000/api/dishes')
+      fetch(`${import.meta.env.VITE_API_URL}/api/dishes`)
         .then(res => res.json())
         .then(data => {
           setDishes(data);
@@ -41,7 +41,7 @@ export default function App() {
       Notification.requestPermission().catch(() => {});
     }
 
-    const eventSource = new EventSource('http://localhost:5000/api/orders/stream');
+    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/api/orders/stream`);
 
     eventSource.onmessage = (event) => {
       try {
