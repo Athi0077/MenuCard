@@ -7,6 +7,7 @@ import AdminAuth from './pages/AdminAuth';
 import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navebar';
 import CartSidePanel from './components/CardSidePanel';
+import InlineOrderTracker from './components/InlineOrderTracker';
 import bgImage from './assets/bg.jpeg';
 
 
@@ -175,9 +176,13 @@ export default function App() {
         />
       <Navbar isTrackingOpen={isTrackingOpen} onOpenTracking={setIsTrackingOpen} />
       
-      <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Menu Left / Center column workspace */}
-        <div className="lg:col-span-2 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Inline Live Order Tracking (Visible only when there's an active order) */}
+        <InlineOrderTracker />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Menu Left / Center column workspace */}
+          <div className="lg:col-span-2 space-y-6">
           <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/50">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Explore dishes</h2>
             <p className="text-gray-500 mb-6 text-sm">Freshly prepared resort favorites right to your table.</p>
@@ -223,6 +228,7 @@ export default function App() {
             onOrderSuccess={clearCart}
             onOpenTracking={setIsTrackingOpen}
           />
+        </div>
         </div>
       </main>
     </div>

@@ -1,0 +1,96 @@
+import React, { useState, useEffect } from 'react';
+
+export default function InlineOrderTracker() {
+  const [latestOrder, setLatestOrder] = useState(null);
+  const [hideDelivered, setHideDelivered] = useState(false);
+
+  const fetchLatestOrder = async () => {
+    const savedIds = JSON.parse(localStorage.getItem('user_orders') || '[]');
+    if (savedIds.length === 0) return;
+    
+    // Fetch the most recent order
+    const latestId = savedIds[savedIds.length - 1];
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${latestId}`);
+      if (res.ok) {
+        const order = await res.json();
+        setLatestOrder(order);
+        
+        if (order.status === 'Delivered' || order.status === 'Cancelled') {
+          // Hide 1 minute after it was updated to Delivered/Cancelled
+          const updatedTime = new Date(order.updatedAt).getTime();
+          if (Date.now() - updatedTime > 60 * 1000) {
+            setHideDelivered(true);
+          } else {
+            setHideDelivered(false);
+          }
+        } else {
+          setHideDelivered(false);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch inline order status", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchLatestOrder();
+    const interval = setInterval(fetchLatestOrder, 5000); // Poll every 5s
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!latestOrder || hideDelivered) return null;
+
+  const steps = ['Pending', 'Preparing', 'Ready', 'Delivered'];
+  const currentStatus = latestOrder.status;
+  
+  if (currentStatus === 'Cancelled') {
+    return (
+      <div className="bg-red-50 p-4 rounded-2xl border border-red-100 text-center text-red-600 font-bold mb-6">
+        Your last order (ORD-{latestOrder._id.slice(-4).toUpperCase()}) was cancelled.
+      </div>
+    );
+  }
+
+  const currentIndex = steps.indexOf(currentStatus);
+
+  return (
+    <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/50 mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
+        <div>
+          <h3 className="font-bold text-gray-900 text-lg">Live Order Tracking</h3>
+          <p className="text-xs text-gray-500 font-medium">ORD-{latestOrder._id.slice(-4).toUpperCase()} • Table {latestOrder.table}</p>
+        </div>
+        <span className="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-teal-100 uppercase tracking-wider">
+          {currentStatus}
+        </span>
+      </div>
+      
+      <div className="py-2 flex items-center justify-between relative px-2 sm:px-8">
+        {/* Background Line */}
+        <div className="absolute top-1/2 left-6 right-6 sm:left-12 sm:right-12 h-1.5 bg-gray-100 -translate-y-1/2 z-0 rounded-full"></div>
+        {/* Active Line */}
+        <div 
+          className="absolute top-1/2 left-6 sm:left-12 h-1.5 bg-teal-400 -translate-y-1/2 z-0 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${(Math.max(0, currentIndex) / (steps.length - 1)) * 100}%`, maxWidth: 'calc(100% - 3rem)' }}
+        ></div>
+  
+        {steps.map((step, index) => {
+          const isCompleted = index <= currentIndex;
+          const isActive = index === currentIndex;
+          
+          return (
+            <div key={step} className="relative z-10 flex flex-col items-center gap-2">
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold border-4 transition-colors duration-500 ${isCompleted ? 'bg-teal-500 border-white text-white shadow-md' : 'bg-gray-50 border-white text-gray-400'} ${isActive ? 'ring-4 ring-teal-100' : ''}`}>
+                {isCompleted ? '✓' : index + 1}
+              </div>
+              <span className={`text-[9px] sm:text-xs font-extrabold uppercase tracking-wider ${isActive ? 'text-teal-700' : (isCompleted ? 'text-gray-700' : 'text-gray-400')}`}>
+                {step}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
