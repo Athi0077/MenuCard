@@ -17,6 +17,7 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [dishes, setDishes] = useState([]);
   const [categories, setCategories] = useState(['All']);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const seenNotificationsRef = useRef(new Set());
 
@@ -139,9 +140,11 @@ export default function App() {
   const clearCart = () => setCart([]);
 
   // Filter local array calculation logic
-  const filteredDishes = selectedCategory === 'All'
-    ? dishes
-    : dishes.filter(dish => dish.category === selectedCategory);
+  const filteredDishes = dishes.filter(dish => {
+    const matchesCategory = selectedCategory === 'All' || dish.category === selectedCategory;
+    const matchesSearch = !searchQuery || dish.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   // ROUTE 1: Admin Panel Dashboard Paths
   if (window.location.pathname.startsWith('/admin')) {
@@ -179,11 +182,22 @@ export default function App() {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Explore dishes</h2>
             <p className="text-gray-500 mb-6 text-sm">Freshly prepared resort favorites right to your table.</p>
             
-            <CategoryFilter 
-              categories={categories} 
-              selectedCategory={selectedCategory} 
-              onSelectCategory={setSelectedCategory} 
-            />
+            <div className="flex flex-col sm:flex-row gap-4 mb-2">
+              <input 
+                type="text" 
+                placeholder="Search for a dish..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-1/3 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-800 outline-none transition-all"
+              />
+              <div className="flex-1 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+                <CategoryFilter 
+                  categories={categories} 
+                  selectedCategory={selectedCategory} 
+                  onSelectCategory={setSelectedCategory} 
+                />
+              </div>
+            </div>
           </div>
 
           {filteredDishes.length === 0 ? (

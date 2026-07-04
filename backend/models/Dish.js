@@ -10,6 +10,7 @@ const DishSchema = new mongoose.Schema({
   tags: [{ type: String }],
   specialItemName: { type: String, default: '' },
   specialItemPrice: { type: Number, default: 0 },
+  dietaryPreference: { type: String, enum: ['Veg', 'Non-Veg', 'Vegan', 'None'], default: 'None' },
   isAvailable: { type: Boolean, default: true }
 }, { timestamps: true });
 

@@ -29,7 +29,12 @@ export default function DishCard({ dish, onAdd }) {
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-1">
-          <h3 className="font-bold text-gray-900 truncate">{dish.name}</h3>
+          <h3 className="font-bold text-gray-900 truncate">
+            {dish.name}
+            {dish.dietaryPreference && dish.dietaryPreference !== 'None' && (
+              <span className={`ml-2 inline-block w-2.5 h-2.5 rounded-full ring-2 ring-offset-1 ${dish.dietaryPreference === 'Veg' || dish.dietaryPreference === 'Vegan' ? 'bg-green-500 ring-green-200' : 'bg-red-500 ring-red-200'}`} title={dish.dietaryPreference}></span>
+            )}
+          </h3>
           {!dish.isAvailable && (
             <span className="bg-red-50 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase flex-shrink-0">
               Out of stock

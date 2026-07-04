@@ -5,7 +5,7 @@ export default function MenuManagement({ token }) {
   const [menuItems, setMenuItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    name: '', category: 'Breakfast', description: '', imageUrl: '', price: 0, prepTime: 15, tags: '', isAvailable: true, specialItemName: '', specialItemPrice: 0
+    name: '', category: 'Breakfast', description: '', imageUrl: '', price: 0, prepTime: 15, tags: '', dietaryPreference: 'None', isAvailable: true, specialItemName: '', specialItemPrice: 0
   });
 
   const fetchMenu = async () => {
@@ -31,7 +31,7 @@ export default function MenuManagement({ token }) {
 
   const resetForm = () => {
     setEditingId(null);
-    setFormData({ name: '', category: 'Breakfast', description: '', imageUrl: '', price: 0, prepTime: 15, tags: '', isAvailable: true, specialItemName: '', specialItemPrice: 0 });
+    setFormData({ name: '', category: 'Breakfast', description: '', imageUrl: '', price: 0, prepTime: 15, tags: '', dietaryPreference: 'None', isAvailable: true, specialItemName: '', specialItemPrice: 0 });
   };
 
   const handleSubmit = async (e) => {
@@ -71,6 +71,7 @@ export default function MenuManagement({ token }) {
       price: item.price || 0,
       prepTime: item.prepTime || 15,
       tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || ''),
+      dietaryPreference: item.dietaryPreference || 'None',
       isAvailable: item.isAvailable !== undefined ? item.isAvailable : true,
       specialItemName: item.specialItemName || '',
       specialItemPrice: item.specialItemPrice || 0
@@ -154,9 +155,20 @@ export default function MenuManagement({ token }) {
               <input type="number" name="prepTime" required value={formData.prepTime} onChange={handleInputChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 font-bold" />
             </div>
           </div>
-          <div>
-            <label className="block mb-1">Veg or Non-Veg</label>
-            <input type="text" name="tags" placeholder="Veg or Non-Veg" value={formData.tags} onChange={handleInputChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 normal-case placeholder-gray-300 font-normal" />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1">Tags (Comma separated)</label>
+              <input type="text" name="tags" placeholder="e.g. Spicy, Popular" value={formData.tags} onChange={handleInputChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 normal-case placeholder-gray-300 font-normal" />
+            </div>
+            <div>
+              <label className="block mb-1">Dietary Preference</label>
+              <select name="dietaryPreference" value={formData.dietaryPreference} onChange={handleInputChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 normal-case outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-800">
+                <option value="None">None</option>
+                <option value="Veg">Vegetarian</option>
+                <option value="Non-Veg">Non-Vegetarian</option>
+                <option value="Vegan">Vegan</option>
+              </select>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -200,7 +212,12 @@ export default function MenuManagement({ token }) {
                 <div className="flex items-center gap-3 min-w-0">
                   {item.imageUrl && <img src={item.imageUrl} alt="" className="w-12 h-12 object-cover rounded-xl bg-gray-100 flex-shrink-0" />}
                   <div className="min-w-0">
-                    <h4 className="font-bold text-gray-900 truncate">{item.name}</h4>
+                    <h4 className="font-bold text-gray-900 truncate">
+                      {item.name}
+                      {item.dietaryPreference && item.dietaryPreference !== 'None' && (
+                        <span className={`ml-2 inline-block w-2 h-2 rounded-full ${item.dietaryPreference === 'Veg' || item.dietaryPreference === 'Vegan' ? 'bg-green-500' : 'bg-red-500'}`} title={item.dietaryPreference}></span>
+                      )}
+                    </h4>
                     <p className="text-xs text-teal-800 font-bold">{item.category} • ₹{item.price}</p>
                     {!item.isAvailable && (
                       <span className="text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded uppercase">Unavailable</span>

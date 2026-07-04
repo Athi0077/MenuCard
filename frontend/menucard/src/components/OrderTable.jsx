@@ -2,6 +2,26 @@ import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 export default function OrdersTable({ token }) {
+  const playDing = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+      gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+      console.warn("Audio play failed:", e);
+    }
+  };
+
   const [orders, setOrders] = useState([]);
   const [acceptTimers, setAcceptTimers] = useState({});
   const [countdowns, setCountdowns] = useState({});
@@ -42,6 +62,9 @@ export default function OrdersTable({ token }) {
         
         // Auto-refresh orders table
         fetchOrders();
+        
+        // Play sound
+        playDing();
 
         // Trigger push notification
         if ('Notification' in window && Notification.permission === 'granted') {

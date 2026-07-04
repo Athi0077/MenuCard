@@ -2,6 +2,46 @@ import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 export default function TrackOrder({ isOpen, onClose }) {
+  const OrderStepper = ({ currentStatus }) => {
+    const steps = ['Pending', 'Preparing', 'Ready', 'Delivered'];
+    
+    if (currentStatus === 'Cancelled') {
+      return (
+        <div className="py-2 text-center text-red-600 font-bold text-xs bg-red-50 rounded-lg">
+          Order Cancelled
+        </div>
+      );
+    }
+  
+    const currentIndex = steps.indexOf(currentStatus);
+  
+    return (
+      <div className="py-4 flex items-center justify-between relative px-2">
+        <div className="absolute top-7 left-6 right-6 h-1 bg-gray-200 -translate-y-1/2 z-0 rounded"></div>
+        <div 
+          className="absolute top-7 left-6 h-1 bg-teal-500 -translate-y-1/2 z-0 rounded transition-all duration-500"
+          style={{ width: `${(Math.max(0, currentIndex) / (steps.length - 1)) * 100}%`, maxWidth: 'calc(100% - 3rem)' }}
+        ></div>
+  
+        {steps.map((step, index) => {
+          const isCompleted = index <= currentIndex;
+          const isActive = index === currentIndex;
+          
+          return (
+            <div key={step} className="relative z-10 flex flex-col items-center gap-2">
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-colors ${isCompleted ? 'bg-teal-500 border-teal-500 text-white shadow-sm' : 'bg-white border-gray-300 text-gray-300'} ${isActive ? 'ring-4 ring-teal-50' : ''}`}>
+                {isCompleted ? '✓' : index + 1}
+              </div>
+              <span className={`text-[9px] font-bold uppercase tracking-wider ${isActive ? 'text-teal-700' : (isCompleted ? 'text-gray-700' : 'text-gray-400')}`}>
+                {step}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const [orders, setOrders] = useState([]);
   const [countdowns, setCountdowns] = useState({});
   const [cancelCountdowns, setCancelCountdowns] = useState({});
@@ -163,17 +203,16 @@ export default function TrackOrder({ isOpen, onClose }) {
 
               return (
                 <div key={order._id} className={`bg-white border rounded-2xl p-5 shadow-sm space-y-4 ${isDelivered ? 'opacity-70 border-gray-100' : 'border-gray-200'}`}>
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between border-b border-gray-50 pb-3">
                     <div>
                       <span className="font-black text-gray-900">ORD-{order._id.slice(-4).toUpperCase()}</span>
                       <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
                         {new Date(order.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                       </p>
                     </div>
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-md border uppercase tracking-wider ${statusColor}`}>
-                      {order.status}
-                    </span>
                   </div>
+
+                  <OrderStepper currentStatus={order.status} />
 
                   {isPreparing && countdown !== undefined && (
                     <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col items-center justify-center space-y-1">
