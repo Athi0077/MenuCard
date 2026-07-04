@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export default function InlineOrderTracker() {
+export default function InlineOrderTracker({ isTrackingOpen, onOpenTracking }) {
   const [latestOrder, setLatestOrder] = useState(null);
   const [hideDelivered, setHideDelivered] = useState(false);
 
@@ -55,11 +55,14 @@ export default function InlineOrderTracker() {
   const currentIndex = steps.indexOf(currentStatus);
 
   return (
-    <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/50 mb-6">
+    <div 
+      className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/50 mb-6 cursor-pointer hover:shadow-md transition-shadow group"
+      onClick={() => onOpenTracking && onOpenTracking(true)}
+    >
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
         <div>
-          <h3 className="font-bold text-gray-900 text-lg">Live Order Tracking</h3>
-          <p className="text-xs text-gray-500 font-medium">ORD-{latestOrder._id.slice(-4).toUpperCase()} • Table {latestOrder.table}</p>
+          <h3 className="font-bold text-gray-900 text-lg group-hover:text-teal-700 transition-colors">Live Order Tracking</h3>
+          <p className="text-xs text-gray-500 font-medium">ORD-{latestOrder._id.slice(-4).toUpperCase()} • Table {latestOrder.table} <span className="text-teal-600 ml-2 group-hover:underline">View details &rarr;</span></p>
         </div>
         <span className="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-teal-100 uppercase tracking-wider">
           {currentStatus}
