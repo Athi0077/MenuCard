@@ -96,12 +96,19 @@ export default function OrderHistory({ token }) {
                   </td>
                   <td className="p-4 max-w-xs">
                     <ul className="space-y-0.5">
-                      {order.items.map((item, idx) => (
-                        <li key={idx} className="text-gray-600 text-xs">
-                          <span className="font-bold text-gray-800">{item.quantity}x</span> {item.dish?.name || 'Unknown'}
-                          {item.specialItem && <span className="text-teal-700 font-bold ml-1">(+ {item.specialItem})</span>}
-                        </li>
-                      ))}
+                      {order.items.map((item, idx) => {
+                        const dietary = item.dish?.dietaryPreference;
+                        return (
+                          <li key={idx} className="text-gray-600 text-xs flex items-center gap-1 flex-wrap">
+                            <span className="font-bold text-gray-800">{item.quantity}x</span> 
+                            <span>{item.dish?.name || 'Unknown'}</span>
+                            {dietary && dietary !== 'None' && (
+                              <span className={`flex-shrink-0 inline-block w-1.5 h-1.5 rounded-full ${dietary === 'Veg' || dietary === 'Vegan' ? 'bg-green-500' : 'bg-red-500'}`} title={dietary}></span>
+                            )}
+                            {item.specialItem && <span className="text-teal-700 font-bold">(+ {item.specialItem})</span>}
+                          </li>
+                        );
+                      })}
                     </ul>
                     {order.tasteInstructions && (
                       <div className="mt-1.5 text-[10px] text-amber-700 bg-amber-50 p-1 rounded font-medium">

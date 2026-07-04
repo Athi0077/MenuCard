@@ -59,7 +59,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
         savedBills.push({
           _id: responseData._id,
           totalAmount: cartTotal,
-          items: cart.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
+          items: cart.map(item => ({ name: item.name, quantity: item.quantity, price: item.price, dietaryPreference: item.dietaryPreference })),
           date: new Date().toISOString(),
           status: 'Pending'
         });
@@ -129,7 +129,12 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
           {cart.map((item) => (
             <div key={item._id} className="flex justify-between items-center text-sm">
               <div className="truncate max-w-[60%]">
-                <p className="font-semibold text-gray-800 truncate">{item.name}</p>
+                <p className="font-semibold text-gray-800 truncate flex items-center gap-1.5">
+                  <span className="truncate">{item.name}</span>
+                  {item.dietaryPreference && item.dietaryPreference !== 'None' && (
+                    <span className={`flex-shrink-0 inline-block w-2 h-2 rounded-full ${item.dietaryPreference === 'Veg' || item.dietaryPreference === 'Vegan' ? 'bg-green-500' : 'bg-red-500'}`} title={item.dietaryPreference}></span>
+                  )}
+                </p>
                 <p className="text-xs text-gray-400">₹{item.price}</p>
               </div>
               <div className="flex items-center gap-2 border border-gray-200 rounded-lg p-1 bg-gray-50">

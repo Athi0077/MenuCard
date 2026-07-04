@@ -88,11 +88,14 @@ export default function Bills({ isOpen, onClose }) {
                     <ul className="space-y-1.5">
                       {bill.items.map((item, idx) => (
                         <li key={idx} className="text-sm text-gray-700 flex justify-between">
-                          <span>
-                            <span className="font-bold mr-1 text-gray-900">{item.quantity}x</span> 
-                            {item.name}
+                          <span className="flex items-center gap-1.5">
+                            <span className="font-bold text-gray-900">{item.quantity}x</span> 
+                            <span className="truncate max-w-[120px] sm:max-w-[180px]">{item.name}</span>
+                            {item.dietaryPreference && item.dietaryPreference !== 'None' && (
+                              <span className={`flex-shrink-0 inline-block w-1.5 h-1.5 rounded-full ${item.dietaryPreference === 'Veg' || item.dietaryPreference === 'Vegan' ? 'bg-green-500' : 'bg-red-500'}`} title={item.dietaryPreference}></span>
+                            )}
                           </span>
-                          <span className="font-medium text-gray-600">₹{(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="font-medium text-gray-600 flex-shrink-0">₹{(item.price * item.quantity).toFixed(2)}</span>
                         </li>
                       ))}
                     </ul>

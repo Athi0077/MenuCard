@@ -241,14 +241,21 @@ export default function TrackOrder({ isOpen, onClose }) {
                   <div className="space-y-2">
                     <p className="text-xs font-bold text-gray-400 uppercase border-b border-gray-50 pb-1">Order Details</p>
                     <ul className="space-y-1.5">
-                      {order.items.map((item, idx) => (
-                        <li key={idx} className="text-sm text-gray-700 flex justify-between">
-                          <span>
-                            <span className="font-bold mr-1">{item.quantity}x</span> {item.dish?.name || 'Item'}
-                            {item.specialItem && <span className="text-teal-700 font-bold ml-1 text-xs">(+ {item.specialItem})</span>}
-                          </span>
-                        </li>
-                      ))}
+                      {order.items.map((item, idx) => {
+                        const dietary = item.dish?.dietaryPreference;
+                        return (
+                          <li key={idx} className="text-sm text-gray-700 flex justify-between">
+                            <span className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold">{item.quantity}x</span> 
+                              <span>{item.dish?.name || 'Item'}</span>
+                              {dietary && dietary !== 'None' && (
+                                <span className={`flex-shrink-0 inline-block w-2 h-2 rounded-full ${dietary === 'Veg' || dietary === 'Vegan' ? 'bg-green-500' : 'bg-red-500'}`} title={dietary}></span>
+                              )}
+                              {item.specialItem && <span className="text-teal-700 font-bold text-xs">(+ {item.specialItem})</span>}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                     {order.tasteInstructions && (
                       <div className="mt-2 text-xs text-amber-700 bg-amber-50/80 p-2 rounded-lg font-medium border border-amber-100">
