@@ -24,10 +24,10 @@ export default function Bills({ isOpen, onClose }) {
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/40 z-[60] transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/40 z-[999] transition-opacity" onClick={onClose} />
       
       {/* Slide-over panel */}
-      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl z-[70] transform transition-transform overflow-y-auto flex flex-col">
+      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl z-[1000] transform transition-transform overflow-y-auto flex flex-col">
         <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
           <div>
             <h2 className="text-xl font-bold text-gray-900">My Bills</h2>

@@ -11,7 +11,7 @@ exports.registerAdmin = async (req, res) => {
     if (existing) return res.status(400).json({ message: 'Admin identifier already in active records' });
 
     const admin = await Admin.create({ username, password });
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET || 'secretkey123', { expiresIn: '1d' });
+    const token = jwt.sign({ id: admin._id, username: admin.username }, process.env.JWT_SECRET || 'secretkey123', { expiresIn: '1d' });
     res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -25,7 +25,7 @@ exports.loginAdmin = async (req, res) => {
     if (!admin || !(await bcrypt.compare(password, admin.password))) {
       return res.status(401).json({ message: 'Invalid admin credentials profile matching failed' });
     }
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET || 'secretkey123', { expiresIn: '1d' });
+    const token = jwt.sign({ id: admin._id, username: admin.username }, process.env.JWT_SECRET || 'secretkey123', { expiresIn: '1d' });
     res.json({ token });
   } catch (error) {
     res.status(500).json({ message: error.message });

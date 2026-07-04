@@ -21,7 +21,7 @@ export default function DishCard({ dish, onAdd }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex gap-4 items-center hover:shadow-md transition-shadow">
+    <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-white/50 shadow-sm flex gap-4 items-center hover:shadow-md transition-shadow">
       <img 
         src={dish.imageUrl || fallbackImage} 
         alt={dish.name} 

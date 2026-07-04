@@ -6,6 +6,16 @@ import OrderHistory from '../components/OrderHistory';
 export default function AdminDashboard({ token, onLogout }) {
   const [activeTab, setActiveTab] = useState('orders');
 
+  let staffName = 'Admin';
+  try {
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.username) staffName = payload.username;
+    }
+  } catch (e) {
+    console.error('Error decoding token', e);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 antialiased">
       <header className="bg-white border-b border-gray-200">
@@ -13,6 +23,8 @@ export default function AdminDashboard({ token, onLogout }) {
           <div className="space-y-1">
             <span className="inline-block bg-teal-50 text-teal-700 text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wider">Operations Dashboard</span>
             <h1 className="text-3xl font-black text-gray-900 tracking-tight">Resort Staff Control Center</h1>
+             {/*welcome staff name*/}
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Welcome, {staffName}!</h2>
             <p className="text-gray-500 text-sm">Manage menu inventory, customer orders, preparation times, and live order progress.</p>
           </div>
           <button onClick={onLogout} className="border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold px-5 py-2 rounded-xl text-sm transition-colors shadow-sm">Logout</button>

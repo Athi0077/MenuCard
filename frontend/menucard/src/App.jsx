@@ -7,6 +7,7 @@ import AdminAuth from './pages/AdminAuth';
 import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navebar';
 import CartSidePanel from './components/CardSidePanel';
+import bgImage from './assets/bg.jpeg';
 
 export default function App() {
   const [adminToken, setAdminToken] = useState(localStorage.getItem('admin_session_token') || '');
@@ -21,7 +22,7 @@ export default function App() {
   // Fetch food menu live from MongoDB database on load
   useEffect(() => {
     if (!window.location.pathname.startsWith('/admin')) {
-      fetch('https://menucard-e73d.onrender.com/api/dishes')
+      fetch('http://localhost:5000/api/dishes')
         .then(res => res.json())
         .then(data => {
           setDishes(data);
@@ -40,7 +41,7 @@ export default function App() {
       Notification.requestPermission().catch(() => {});
     }
 
-    const eventSource = new EventSource('https://menucard-e73d.onrender.com/api/orders/stream');
+    const eventSource = new EventSource('http://localhost:5000/api/orders/stream');
 
     eventSource.onmessage = (event) => {
       try {
@@ -161,13 +162,17 @@ export default function App() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="min-h-screen bg-gray-50 text-gray-800 antialiased">
+      <div className="min-h-screen text-gray-800 antialiased relative z-0">
+        <div 
+          className="fixed inset-0 -z-10"
+          style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.5 }}
+        />
       <Navbar isTrackingOpen={isTrackingOpen} onOpenTracking={setIsTrackingOpen} />
       
       <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Menu Left / Center column workspace */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/50">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Explore dishes</h2>
             <p className="text-gray-500 mb-6 text-sm">Freshly prepared resort favorites right to your table.</p>
             
@@ -179,7 +184,7 @@ export default function App() {
           </div>
 
           {filteredDishes.length === 0 ? (
-            <p className="text-center text-gray-400 py-12 text-sm bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <p className="text-center text-gray-400 py-12 text-sm bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
               No dishes found under this category selection.
             </p>
           ) : (

@@ -19,7 +19,7 @@ export default function TrackOrder({ isOpen, onClose }) {
     try {
       const fetchedOrders = [];
       for (const id of savedIds) {
-        const res = await fetch(`https://menucard-e73d.onrender.com/api/orders/${id}`);
+        const res = await fetch(`http://localhost:5000/api/orders/${id}`);
         if (res.ok) {
           const data = await res.json();
           fetchedOrders.push(data);
@@ -96,7 +96,7 @@ export default function TrackOrder({ isOpen, onClose }) {
 
   const handleCancelOrder = async (id) => {
     try {
-      const res = await fetch(`https://menucard-e73d.onrender.com/api/orders/${id}/cancel`, {
+      const res = await fetch(`http://localhost:5000/api/orders/${id}/cancel`, {
         method: 'PUT'
       });
       if (res.ok) {
@@ -117,10 +117,10 @@ export default function TrackOrder({ isOpen, onClose }) {
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/40 z-[60] transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/40 z-[999] transition-opacity" onClick={onClose} />
       
       {/* Slide-over panel */}
-      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl z-[70] transform transition-transform overflow-y-auto flex flex-col">
+      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl z-[1000] transform transition-transform overflow-y-auto flex flex-col">
         <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Track Orders</h2>

@@ -36,7 +36,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
     };
 
     try {
-      const response = await fetch('https://menucard-e73d.onrender.com/api/orders', {
+      const response = await fetch('http://localhost:5000/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -88,7 +88,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
   // Success state after order placement
   if (orderPlaced) {
     return (
-      <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm sticky top-28 space-y-4">
+      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm sticky top-28 space-y-4">
         <div className="py-12 text-center space-y-3">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
             <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -106,7 +106,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm sticky top-28 space-y-6">
+    <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/50 shadow-sm sticky top-28 space-y-6">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Your order</h2>

@@ -6,7 +6,8 @@ export default function Navbar({ isTrackingOpen, onOpenTracking }) {
   const [isBillsOpen, setIsBillsOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <>
+      <header className="bg-white/80 backdrop-blur-md border-b border-white/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:h-20 sm:py-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
         <div>
           <span className="inline-block bg-teal-50 text-teal-700 text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wider mb-1">
@@ -31,9 +32,10 @@ export default function Navbar({ isTrackingOpen, onOpenTracking }) {
           </button>
         </div>
       </div>
+      </header>
       
       <TrackOrder isOpen={isTrackingOpen} onClose={() => onOpenTracking(false)} />
       <Bills isOpen={isBillsOpen} onClose={() => setIsBillsOpen(false)} />
-    </header>
+    </>
   );
 }
