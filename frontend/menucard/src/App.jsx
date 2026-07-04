@@ -177,8 +177,8 @@ export default function App() {
       <Navbar isTrackingOpen={isTrackingOpen} onOpenTracking={setIsTrackingOpen} />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Inline Live Order Tracking (Visible only when there's an active order) */}
-        <InlineOrderTracker isTrackingOpen={isTrackingOpen} />
+        {/* Inline Live Order Tracking (Visible only when there's an active order),click the live tracker open track order modal */}
+        <InlineOrderTracker isTrackingOpen={isTrackingOpen} onOpenTracking={setIsTrackingOpen} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Menu Left / Center column workspace */}
