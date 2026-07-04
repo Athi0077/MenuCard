@@ -16,7 +16,7 @@ const OrderSchema = new mongoose.Schema({
   totalAmount: { type: Number, required: true },
   acceptedAt: { type: Date, default: null },
   timerMinutes: { type: Number, default: 0 },
-  fcmToken: { type: String } // Store user's device token to send them status updates
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', OrderSchema);

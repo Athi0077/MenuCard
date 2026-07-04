@@ -25,14 +25,14 @@ app.get('/api/orders/stream', orderController.streamOrderUpdates);
 app.get('/api/orders/:id', orderController.getOrderById);
 app.put('/api/orders/:id/cancel', orderController.cancelOrder);
 
-app.use("/api/fcm", require("./routes/fcm"));
+
 
 // Admin auth routes
 app.post('/api/admin/register', authController.registerAdmin);
 app.post('/api/admin/login', authController.loginAdmin);
 
 // Protected admin routes
-app.put('/api/admin/fcm-token', protectAdmin, authController.updateFCMToken);
+
 app.get('/api/admin/orders/stream', protectAdmin, orderController.streamOrders);
 app.post('/api/admin/dishes', protectAdmin, dishController.createDish);
 app.put('/api/admin/dishes/:id', protectAdmin, dishController.updateDish);

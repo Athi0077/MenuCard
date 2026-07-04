@@ -1,66 +1,25 @@
 const Order = require('../models/Order');
-const FcmToken = require('../models/FcmToken');
-const adminFirebase = require('../config/firebaseAdmin');
+
 const EventEmitter = require('events');
 
 const orderEmitter = new EventEmitter();
 
-const notifyAdminsNewOrder = async (order) => {
-  if (!adminFirebase.apps.length) return;
-  try {
-    const adminTokens = await FcmToken.find({});
-    const tokens = adminTokens.map(doc => doc.token);
-    if (tokens.length > 0) {
-      await adminFirebase.messaging().sendEachForMulticast({
-        tokens,
-        notification: {
-          title: 'New Order Received',
-          body: `Table ${order.table} - ${order.customerName}`,
-        }
-      });
-    }
-  } catch (err) {
-    console.error("FCM Admin Notify Error:", err);
-  }
-};
 
-const notifyUserOrderStatus = async (order) => {
-  if (!adminFirebase.apps.length || !order.fcmToken) return;
-  try {
-    const statusMessages = {
-      Preparing: 'Your order is now being prepared.',
-      Ready: 'Your order is ready to serve.',
-      Delivered: 'Your order has been delivered.',
-      Cancelled: 'Your order was cancelled.'
-    };
-    const messageBody = statusMessages[order.status] || `Your order status is now ${order.status}`;
-    
-    await adminFirebase.messaging().send({
-      token: order.fcmToken,
-      notification: {
-        title: 'Order Update',
-        body: messageBody,
-      }
-    });
-  } catch (err) {
-    console.error("FCM User Notify Error:", err);
-  }
-};
 
 
 exports.placeOrder = async (req, res) => {
   try {
-    const { table, customerName, mobileNumber, emailAddress, items, totalAmount, tasteInstructions, fcmToken } = req.body;
+    const { table, customerName, mobileNumber, emailAddress, items, totalAmount, tasteInstructions } = req.body;
     if (!table || !customerName || !mobileNumber || !items || items.length === 0) {
       return res.status(400).json({ message: 'Table, customer name, mobile number, and at least one item are required.' });
     }
-    const order = await Order.create({ table, customerName, mobileNumber, emailAddress, items, totalAmount, tasteInstructions, fcmToken });
+    const order = await Order.create({ table, customerName, mobileNumber, emailAddress, items, totalAmount, tasteInstructions });
 
     // Emit event for admin and customer real-time updates
     orderEmitter.emit('newOrder', order);
     orderEmitter.emit('orderUpdated', order);
 
-    notifyAdminsNewOrder(order);
+
 
     res.status(201).json(order);
   } catch (error) {
@@ -88,7 +47,7 @@ exports.updateOrderStatus = async (req, res) => {
     if (!order) return res.status(404).json({ message: 'Order not found.' });
 
     orderEmitter.emit('orderUpdated', order);
-    notifyUserOrderStatus(order);
+
     res.json(order);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -115,7 +74,7 @@ exports.acceptOrder = async (req, res) => {
     if (!order) return res.status(404).json({ message: 'Order not found.' });
 
     orderEmitter.emit('orderUpdated', order);
-    notifyUserOrderStatus(order);
+
     res.json(order);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -150,7 +109,7 @@ exports.cancelOrder = async (req, res) => {
     await order.save();
 
     orderEmitter.emit('orderUpdated', order);
-    notifyUserOrderStatus(order);
+
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });
