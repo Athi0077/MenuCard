@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TrackOrder from './TrackOrder';
 import Bills from './Bills';
-import logo from '../assets/logo.jpeg';
+import logo from '../assets/logo.png';
 
 export default function Navbar({ isTrackingOpen, onOpenTracking }) {
   const [isBillsOpen, setIsBillsOpen] = useState(false);

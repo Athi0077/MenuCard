@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 
@@ -7,6 +7,21 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
   const [formData, setFormData] = useState({ name: '', mobile: '', email: '', tasteInstructions: '' });
   const [loading, setLoading] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+
+  useEffect(() => {
+    try {
+      const savedProfile = localStorage.getItem('customer_profile');
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        setFormData(prev => ({ ...prev, name: parsed.name || '', mobile: parsed.mobile || '', email: parsed.email || '' }));
+        if (parsed.table && !table) {
+          onTableChange(parsed.table);
+        }
+      }
+    } catch (e) {
+      console.error('Could not load profile', e);
+    }
+  }, []);
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -64,6 +79,13 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
           status: 'Pending'
         });
         localStorage.setItem('user_bills', JSON.stringify(savedBills));
+
+        localStorage.setItem('customer_profile', JSON.stringify({ 
+          name: formData.name, 
+          mobile: formData.mobile, 
+          email: formData.email,
+          table: table
+        }));
 
         setOrderPlaced(true);
         setFormData({ name: '', mobile: '', email: '', tasteInstructions: '' });
@@ -196,8 +218,15 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
             title="Please enter a valid 10-digit phone number"
             value={formData.mobile}
             onChange={handleInputChange}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-800 transition-all outline-none"
+            className={`w-full bg-gray-50 border rounded-xl px-4 py-2.5 text-sm focus:ring-2 transition-all outline-none ${
+              formData.mobile.length > 0 && formData.mobile.length !== 10 
+                ? 'border-red-400 focus:ring-red-500/20 focus:border-red-600' 
+                : 'border-gray-200 focus:ring-teal-500/20 focus:border-teal-800'
+            }`}
           />
+          {formData.mobile.length > 0 && formData.mobile.length !== 10 && (
+            <p className="text-[10px] text-red-500 font-bold mt-1.5 ml-1">Must be exactly 10 digits.</p>
+          )}
         </div>
         <div>
           <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Email address (Optional)</label>
@@ -223,7 +252,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
 
         <button
           type="submit"
-          disabled={loading || cart.length === 0}
+          disabled={loading || cart.length === 0 || (formData.mobile.length > 0 && formData.mobile.length !== 10)}
           className="w-full bg-teal-800 hover:bg-teal-900 text-white font-bold py-3 rounded-xl shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-wide"
         >
           {loading ? 'Processing...' : 'Place order'}
