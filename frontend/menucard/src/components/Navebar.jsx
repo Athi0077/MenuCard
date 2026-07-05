@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TrackOrder from './TrackOrder';
 import Bills from './Bills';
+import logo from '../assets/logo.jpeg';
 
 export default function Navbar({ isTrackingOpen, onOpenTracking }) {
   const [isBillsOpen, setIsBillsOpen] = useState(false);
@@ -10,10 +11,7 @@ export default function Navbar({ isTrackingOpen, onOpenTracking }) {
       <header className="bg-white/80 backdrop-blur-md border-b border-white/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:h-20 sm:py-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
         <div>
-          <span className="inline-block bg-teal-50 text-teal-700 text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wider mb-1">
-            QR Digital Dining Menu
-          </span>
-          <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Resort Menu Card</h1>
+          <img src={logo} alt="Menu Card Logo" className="h-12 sm:h-14 w-auto object-contain mix-blend-multiply" />
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">

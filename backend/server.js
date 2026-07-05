@@ -38,6 +38,7 @@ app.post('/api/admin/dishes', protectAdmin, dishController.createDish);
 app.put('/api/admin/dishes/:id', protectAdmin, dishController.updateDish);
 app.delete('/api/admin/dishes/:id', protectAdmin, dishController.deleteDish);
 app.get('/api/admin/orders', protectAdmin, orderController.getAllOrders);
+app.delete('/api/admin/orders/history', protectAdmin, orderController.deleteOrderHistory);
 app.put('/api/admin/orders/:id', protectAdmin, orderController.updateOrderStatus);
 app.put('/api/admin/orders/:id/accept', protectAdmin, orderController.acceptOrder);
 

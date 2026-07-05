@@ -38,6 +38,69 @@ export default function OrderHistory({ token }) {
     );
   });
 
+  const handleDownloadCSV = () => {
+    if (filteredHistory.length === 0) {
+      toast.info("No data to download.");
+      return;
+    }
+    
+    const headers = ["Order ID", "Customer", "Table", "Mobile", "Items", "Total", "Status", "Ordered Time", "Ended At", "Time Taken (mins)"];
+    const csvRows = [headers.join(',')];
+    
+    filteredHistory.forEach(order => {
+      const itemsStr = order.items.map(i => `${i.quantity}x ${i.dish?.name || 'Unknown'}`).join('; ');
+      
+      const row = [
+        `ORD-${order._id.slice(-4).toUpperCase()}`,
+        `"${order.customerName}"`,
+        order.table,
+        order.mobileNumber,
+        `"${itemsStr}"`,
+        order.totalAmount,
+        order.status,
+        `"${new Date(order.createdAt).toLocaleString('en-IN')}"`,
+        `"${new Date(order.updatedAt).toLocaleString('en-IN')}"`,
+        Math.floor((new Date(order.updatedAt) - new Date(order.createdAt)) / 60000)
+      ];
+      csvRows.push(row.join(','));
+    });
+    
+    const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `order_history_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDeleteAll = async () => {
+    if (history.length === 0) {
+      toast.info("No history to delete.");
+      return;
+    }
+    
+    const confirmDelete = window.confirm("plz first download CSV fild after delete,if you already delete press ok");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/orders/history`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message || "All history deleted successfully");
+        setHistory([]);
+      } else {
+        toast.error(data.message || "Failed to delete history");
+      }
+    } catch (err) {
+      toast.error("An error occurred while deleting history.");
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center gap-4">
@@ -48,12 +111,20 @@ export default function OrderHistory({ token }) {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full max-w-sm bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500/20 focus:border-teal-800 outline-none transition-all"
         />
-        <button
-          onClick={fetchHistory}
-          className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2.5 rounded-lg transition-colors whitespace-nowrap"
-        >
-          ↻ Refresh History
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleDownloadCSV}
+            className="text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 px-3 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+          >
+            Download CSV
+          </button>
+          <button
+            onClick={fetchHistory}
+            className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+          >
+            ↻ Refresh
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -133,6 +204,17 @@ export default function OrderHistory({ token }) {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {!loading && history.length > 0 && (
+        <div className="flex justify-end pt-4">
+          <button
+            onClick={handleDeleteAll}
+            className="text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+          >
+            Delete All Data
+          </button>
         </div>
       )}
     </div>

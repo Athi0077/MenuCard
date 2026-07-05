@@ -149,3 +149,12 @@ exports.streamOrders = (req, res) => {
     orderEmitter.removeListener('newOrder', onNewOrder);
   });
 };
+
+exports.deleteOrderHistory = async (req, res) => {
+  try {
+    const result = await Order.deleteMany({ status: { $in: ['Delivered', 'Cancelled'] } });
+    res.json({ message: 'Order history deleted successfully.', deletedCount: result.deletedCount });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
