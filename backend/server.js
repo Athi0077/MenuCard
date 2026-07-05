@@ -6,6 +6,7 @@ const authController = require('./controllers/authController');
 const dishController = require('./controllers/dishController');
 const orderController = require('./controllers/orderController');
 const protectAdmin = require('./middleware/authMiddleware');
+const rateLimit = require('express-rate-limit');
 
 
 const app = express();
@@ -18,9 +19,16 @@ app.use(cors({
 }));
 app.use(express.json()); 
 
+// Set up rate limiting to prevent spam orders
+const orderLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 order requests per windowMs
+  message: { message: "Too many orders placed, please try again after 15 minutes." }
+});
+
 // Public routes (User-side)
 app.get('/api/dishes', dishController.getDishes);
-app.post('/api/orders', orderController.placeOrder);
+app.post('/api/orders', orderLimiter, orderController.placeOrder);
 app.get('/api/orders/stream', orderController.streamOrderUpdates);
 app.get('/api/orders/:id', orderController.getOrderById);
 app.put('/api/orders/:id/cancel', orderController.cancelOrder);

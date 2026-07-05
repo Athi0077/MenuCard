@@ -143,6 +143,11 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
 
       {cart.length === 0 ? (
         <div className="py-12 text-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
+            <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </div>
           <p className="font-bold text-gray-700 mb-1">Cart is empty</p>
           <p className="text-sm text-gray-400">Select dishes from the menu to continue.</p>
         </div>
@@ -163,7 +168,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
                 <button
                   type="button"
                   onClick={() => onUpdateQty(item._id, -1)}
-                  className="px-2 font-bold hover:text-red-500"
+                  className="px-2 font-bold hover:text-red-500 active:scale-90 transition-transform"
                 >
                   -
                 </button>
@@ -171,7 +176,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
                 <button
                   type="button"
                   onClick={() => onUpdateQty(item._id, 1)}
-                  className="px-2 font-bold hover:text-teal-600"
+                  className="px-2 font-bold hover:text-teal-600 active:scale-90 transition-transform"
                 >
                   +
                 </button>
@@ -253,7 +258,7 @@ export default function CartSidePanel({ cart, table, onTableChange, onUpdateQty,
         <button
           type="submit"
           disabled={loading || cart.length === 0 || (formData.mobile.length > 0 && formData.mobile.length !== 10)}
-          className="w-full bg-teal-800 hover:bg-teal-900 text-white font-bold py-3 rounded-xl shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-wide"
+          className="w-full bg-teal-800 hover:bg-teal-900 text-white font-bold py-3 rounded-xl shadow-md transition-all active:scale-[0.98] disabled:active:scale-100 disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-wide"
         >
           {loading ? 'Processing...' : 'Place order'}
         </button>

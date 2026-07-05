@@ -251,7 +251,8 @@ export default function App() {
               onClick={() => {
                 document.getElementById('cart-section')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="pointer-events-auto bg-teal-800 text-white font-bold py-3.5 px-6 rounded-full shadow-2xl flex items-center gap-3 transition-transform hover:scale-105 border-2 border-teal-700/50"
+              aria-label="View Cart"
+              className="pointer-events-auto bg-teal-800 text-white font-bold py-3.5 px-6 rounded-full shadow-2xl flex items-center gap-3 transition-all hover:scale-105 active:scale-95 border-2 border-teal-700/50"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />

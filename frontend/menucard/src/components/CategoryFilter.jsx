@@ -9,7 +9,7 @@ export default function CategoryFilter({ categories, selectedCategory, onSelectC
           <button
             key={cat}
             onClick={() => onSelectCategory(cat)}
-            className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
+            className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 whitespace-nowrap ${
               isActive 
                 ? 'bg-teal-800 text-white shadow-sm' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
