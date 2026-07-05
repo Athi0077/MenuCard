@@ -25,6 +25,13 @@ export default function OrdersTable({ token }) {
   const [orders, setOrders] = useState([]);
   const [acceptTimers, setAcceptTimers] = useState({});
   const [countdowns, setCountdowns] = useState({});
+  const [audioEnabled, setAudioEnabled] = useState(false);
+
+  const initAudio = () => {
+    playDing();
+    setAudioEnabled(true);
+    toast.success("Audio alerts activated!");
+  };
   const statuses = ['Pending', 'Preparing', 'Ready', 'Delivered', 'Cancelled'];
   const intervalRef = useRef(null);
 
@@ -65,6 +72,9 @@ export default function OrdersTable({ token }) {
         
         // Play sound
         playDing();
+        
+        // In-app visual toast for mobile devices
+        toast.info(`🔔 New Order from Table ${newOrder.table} for ₹${newOrder.totalAmount}`, { autoClose: false, position: "top-center" });
 
         // Trigger push notification
         if ('Notification' in window && Notification.permission === 'granted') {
@@ -164,11 +174,19 @@ export default function OrdersTable({ token }) {
 
   return (
     <div className="space-y-4">
-      {/* Auto-refresh button */}
-      <div className="flex justify-end">
+      {/* Controls */}
+      <div className="flex justify-end gap-2">
+        {!audioEnabled && (
+          <button
+            onClick={initAudio}
+            className="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition-colors border border-amber-200"
+          >
+            🔊 Enable Mobile Audio
+          </button>
+        )}
         <button
           onClick={fetchOrders}
-          className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+          className="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors border border-teal-200"
         >
           ↻ Refresh orders
         </button>
