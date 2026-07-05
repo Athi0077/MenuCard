@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy, useCallback } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CategoryFilter from './components/CategoryFilter';
 import DishCard from './components/DishCard';
-import AdminAuth from './pages/AdminAuth';
-import AdminDashboard from './pages/AdminDashboard';
+import DishCardSkeleton from './components/DishCardSkeleton';
+
+const AdminAuth = lazy(() => import('./pages/AdminAuth'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 import Navbar from './components/Navebar';
 import CartSidePanel from './components/CardSidePanel';
 import InlineOrderTracker from './components/InlineOrderTracker';
@@ -17,6 +19,7 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [cart, setCart] = useState([]);
   const [dishes, setDishes] = useState([]);
+  const [isDishesLoading, setIsDishesLoading] = useState(true);
   const [categories, setCategories] = useState(['All']);
   const [searchQuery, setSearchQuery] = useState('');
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
@@ -34,8 +37,12 @@ export default function App() {
           // Pull unique categories out of the database entries automatically
           const uniqueCats = ['All', ...new Set(data.map(dish => dish.category))];
           setCategories(uniqueCats);
+          setIsDishesLoading(false);
         })
-        .catch(err => console.error("Error connecting to backend dishes API:", err));
+        .catch(err => {
+          console.error("Error connecting to backend dishes API:", err);
+          setIsDishesLoading(false);
+        });
     }
   }, []);
 
@@ -110,7 +117,7 @@ export default function App() {
   };
 
   // Cart Operation Management Handlers
-  const addToCart = (dish) => {
+  const addToCart = useCallback((dish) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(item => item._id === dish._id);
       if (existingItem) {
@@ -126,7 +133,7 @@ export default function App() {
         hideProgressBar: true,
       });
     }
-  };
+  }, []);
 
   const updateQuantity = (id, delta) => {
     setCart((prevCart) => prevCart.map(item => {
@@ -151,17 +158,17 @@ export default function App() {
   if (window.location.pathname.startsWith('/admin')) {
     if (!adminToken) {
       return (
-        <>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div></div>}>
           <ToastContainer position="top-right" autoClose={3000} />
           <AdminAuth onLoginSuccess={handleLogin} />
-        </>
+        </Suspense>
       );
     }
     return (
-      <>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div></div>}>
         <ToastContainer position="top-right" autoClose={3000} />
         <AdminDashboard token={adminToken} onLogout={handleLogout} />
-      </>
+      </Suspense>
     );
   }
 
@@ -205,7 +212,13 @@ export default function App() {
             </div>
           </div>
 
-          {filteredDishes.length === 0 ? (
+          {isDishesLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <DishCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filteredDishes.length === 0 ? (
             <p className="text-center text-gray-400 py-12 text-sm bg-white/80 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
               No dishes found under this category selection.
             </p>

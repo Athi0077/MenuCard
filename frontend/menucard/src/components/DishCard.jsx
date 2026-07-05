@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
-export default function DishCard({ dish, onAdd }) {
+const DishCard = memo(function DishCard({ dish, onAdd }) {
   const [addSpecial, setAddSpecial] = useState(false);
   const fallbackImage = 'https://placeholder.com';
 
@@ -25,6 +25,7 @@ export default function DishCard({ dish, onAdd }) {
       <img 
         src={dish.imageUrl || fallbackImage} 
         alt={dish.name} 
+        loading="lazy"
         className="w-24 h-24 object-cover rounded-xl bg-gray-100 flex-shrink-0" 
       />
       <div className="flex-1 min-w-0">
@@ -84,4 +85,6 @@ export default function DishCard({ dish, onAdd }) {
       </div>
     </div>
   );
-}
+});
+
+export default DishCard;
